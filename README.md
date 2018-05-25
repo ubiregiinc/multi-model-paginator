@@ -21,14 +21,11 @@ Or install it yourself as:
 
 ## Usage
 
-```
-accounts = Account.where(admin: true)
-Post.all
-
-MultiModelPaginator.new do |parinator|
-  parinator.add(query: ->{ Account.all }, select: ->{})
-  parinator.add(query: ->{ Post.all }, select: ->{}, count: ->{})
-end
+```ruby
+parinator = MultiModelPaginator.new(per: 100, page: 0)
+parinator.add(Account.all)
+parinator.add(Post.all)
+parinator.result
 ```
 
 ## License
