@@ -1,6 +1,5 @@
 require "bundler/setup"
 require "pry"
-require "kaminari"
 require "multi_model_paginator"
 require "support/models"
 
