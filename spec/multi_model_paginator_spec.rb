@@ -60,6 +60,34 @@ RSpec.describe MultiModelPaginator do
           expect(make_paginator(per: per, page: 5).result).to eq(Store.list.each_slice(per).to_a[5])
         end
       end
+      context 'page=6' do
+        it 'return records' do
+          expect(make_paginator(per: per, page: 6).result).to eq(Store.list.each_slice(per).to_a[6])
+        end
+      end
+      context 'page=7' do
+        it 'return records' do
+          expect(make_paginator(per: per, page: 7).result).to eq(Store.list.each_slice(per).to_a[7])
+        end
+      end
+      context 'page=8' do
+        it 'return records' do
+          expect(make_paginator(per: per, page: 8).result).to eq(Store.list.each_slice(per).to_a[8])
+        end
+      end
+      context 'page=9' do
+        it 'return records' do
+          expect(make_paginator(per: per, page: 9).result).to eq(Store.list.each_slice(per).to_a[9])
+        end
+      end
+
+      describe 'まとめて' do
+        it 'return records' do
+          (Store.list.size / per).times do |i|
+            expect(make_paginator(per: per, page: i).result).to eq(Store.list.each_slice(per).to_a[i])
+          end
+        end
+      end
     end
 
     context '2モデルで終わる時' do

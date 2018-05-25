@@ -42,8 +42,8 @@ module MultiModelPaginator
       remain = @per
       offset = (@page * @per)
       @query_list.reduce([]) do |accumulator, query|
-        prev_total_count = @query_list.reduce(0) { |a, q| q == query ? (break(a)) : (a =+ q.count) }
-        if (prev_total_count..(prev_total_count + query.count)).include?(offset)
+        prev_total_count = @query_list.reduce(0) { |a, q| q == query ? (break(a)) : (a += q.count) }
+        if (prev_total_count...(prev_total_count + query.count)).include?(offset)
           local_page = @page - (prev_total_count / @per) + 1
         else
           next(accumulator)
