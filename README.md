@@ -1,6 +1,7 @@
 # MultiModelPaginator
 ## Dependencies
 * kaminari
+* ActiveRecord
 
 ## Installation
 
