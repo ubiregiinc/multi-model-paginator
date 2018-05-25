@@ -35,21 +35,23 @@ RSpec.describe MultiModelPaginator do
         end
       end
       context 'page=1' do
-        let(:page) { 1 }
         it 'return records' do
-          expect(make_paginator(per: per, page: 1).result).to eq(Store.list[2..3])
+          expect(make_paginator(per: per, page: 1).result).to eq(Store.list[0..1])
         end
       end
       context 'page=2' do
         it 'return records' do
+          expect(make_paginator(per: per, page: 2).result).to eq(Store.list[2..3])
         end
       end
       context 'page=3' do
         it 'return records' do
+          expect(make_paginator(per: per, page: 3).result).to eq(Store.list[4..5])
         end
       end
       context 'page=4' do
         it 'return records' do
+          expect(make_paginator(per: per, page: 4).result).to eq(Store.list[5..6])
         end
       end
     end
