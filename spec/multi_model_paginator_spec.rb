@@ -4,19 +4,26 @@ RSpec.describe MultiModelPaginator do
   end
 
   describe '#new' do
-    before(:all) do
-      14.times do |i|
-        if (14 / 2) > i
-          Account.create!(name: "name#{i}", nickname: "nickname_a#{i}", admin: true)
-        else
-          Account.create!(name: "name#{i}", nickname: "nickname_a#{i}", admin: false)
-        end
+    before(:each) do
+      @list = []
+      14.times.map do |i|
+        @list <<
+          if (14 / 2) > i
+            Account.create!(name: "name#{i}", nickname: "nickname_a#{i}", admin: true)
+          else
+            Account.create!(name: "name#{i}", nickname: "nickname_a#{i}", admin: false)
+          end
       end
-      5.times do |i|
-        Item.where(name: "name#{i}", visible: true)
+      5.times.map do |i|
+        @list << Item.where(name: "name#{i}", visible: true)
       end
 
       ActiveRecord::Base.logger = Logger.new(STDOUT)
+    end
+    after(:each) do
+      ActiveRecord::Base.logger = Logger.new('/dev/null')
+      Account.delete_all
+      Item.delete_all
     end
 
     context 'per=2' do
@@ -26,8 +33,7 @@ RSpec.describe MultiModelPaginator do
         let(:page) { 0 }
         it 'return records' do
           paginator = make_paginator(per: per, page: page)
-          expected = Account.where(admin: true).order(:id).select(:id, :nickname).page(page).per(2).to_a
-          expect(paginator.result).to eq(expected)
+          expect(paginator.result).to eq(@list[0..1])
         end
       end
       context 'page=1' do
