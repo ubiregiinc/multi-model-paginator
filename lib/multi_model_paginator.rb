@@ -16,12 +16,10 @@ module MultiModelPaginator
 
     def count
       @cached_count ||=
-        begin
-          if @count.nil?
-            @query.count
-          else
-            @count.call
-          end
+        if @count.nil?
+          @query.count
+        else
+          @count.call
         end
     end
   end
@@ -41,14 +39,14 @@ module MultiModelPaginator
     def result
       remain = @per
       offset = (@page * @per)
-      @query_list.reduce([]) do |accumulator, query|
-        prev_total_count = @query_list.reduce(0) { |a, q| q == query ? (break(a)) : (a += q.count) }
-        if (prev_total_count...(prev_total_count + query.count)).include?(offset)
+      @query_list.reduce([]) do |accumulator, query_struct|
+        prev_total_count = @query_list.reduce(0) { |a, q| q == query_struct ? (break(a)) : (a += q.count) }
+        if (prev_total_count...(prev_total_count +  query_struct.count)).include?(offset)
           local_page = @page - (prev_total_count / @per) + 1
         else
           next(accumulator)
         end
-        list = query.with_select.page(local_page).per(@per).first(remain)
+        list = query_struct.with_select.page(local_page).per(@per).first(remain)
         accumulator.concat(list)
         remain = remain - list.size
         if remain == 0
