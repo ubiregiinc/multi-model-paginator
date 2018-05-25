@@ -1,5 +1,7 @@
 require "bundler/setup"
+require "pry"
 require "multi_model_paginator"
+require "support/models"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
