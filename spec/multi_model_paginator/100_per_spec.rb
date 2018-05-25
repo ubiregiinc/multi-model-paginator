@@ -50,7 +50,7 @@ RSpec.describe 'MultiModelPaginator 10 per' do
 
     it 'return records' do
       (Store.list.size / per).times do |i|
-        expect(make_paginator(per: per, page: i).result.map(&:id)).to eq(Store.list.each_slice(per).to_a[i].map(&:id))
+        expect(make_paginator(per: per, page: i).result).to eq(Store.list.each_slice(per).to_a[i])
       end
     end
   end
