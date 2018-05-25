@@ -38,20 +38,31 @@ module MultiModelPaginator
 
     def result
       remain = @per
-      offset = (@page * @per)
+      position = @page * @per
       @query_list.reduce([]) do |accumulator, query_struct|
         prev_total_count = @query_list.reduce(0) { |a, q| q == query_struct ? (break(a)) : (a += q.count) }
-        if (prev_total_count...(prev_total_count +  query_struct.count)).include?(offset)
+        current_range = (prev_total_count...(prev_total_count + query_struct.count))
+        if (prev_total_count...(prev_total_count + query_struct.count)).include?(position)
           local_page = @page - (prev_total_count / @per) + 1
         else
           next(accumulator)
         end
-        list = query_struct.with_select.page(local_page).per(@per).first(remain)
+
+        prev_query_offset = current_range.first
+        list =
+          if prev_query_offset.zero?
+            query_struct.with_select.page(local_page).per(@per).first(remain)
+          else
+            # テーブルt1に6レコード, テーブルt2に10レコードある場合、per: 10で読んだ時にpage:2はテーブルt2の5個目が先頭になる
+            # |t1:......|t2:....[.].......|
+            query_struct.with_select.limit(@per).offset((@page * @per) - prev_query_offset).first(remain)
+          end
         accumulator.concat(list)
         remain = remain - list.size
         if remain == 0
           break(accumulator)
         else
+          position = (@page + 1) * @per
           next(accumulator)
         end
       end
