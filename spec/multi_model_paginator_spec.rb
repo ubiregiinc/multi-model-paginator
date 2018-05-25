@@ -1,13 +1,19 @@
 RSpec.describe MultiModelPaginator do
+  class Store
+    class << self
+      attr_accessor :list
+    end
+  end
+  Store.list = []
+
   it "has a version number" do
     expect(MultiModelPaginator::VERSION).not_to be nil
   end
 
   describe '#new' do
-    before(:each) do
-      @list = []
+    before(:all) do
       14.times.map do |i|
-        @list <<
+        Store.list <<
           if (14 / 2) > i
             Account.create!(name: "name#{i}", nickname: "nickname_a#{i}", admin: true)
           else
@@ -15,58 +21,35 @@ RSpec.describe MultiModelPaginator do
           end
       end
       5.times.map do |i|
-        @list << Item.where(name: "name#{i}", visible: true)
+        Store.list << Item.create!(name: "name#{i}", visible: true)
       end
-
       ActiveRecord::Base.logger = Logger.new(STDOUT)
-    end
-    after(:each) do
-      ActiveRecord::Base.logger = Logger.new('/dev/null')
-      Account.delete_all
-      Item.delete_all
     end
 
     context 'per=2' do
       let(:per) { 2 }
 
       context 'page=0' do
-        let(:page) { 0 }
         it 'return records' do
-          paginator = make_paginator(per: per, page: page)
-          expect(paginator.result).to eq(@list[0..1])
+          expect(make_paginator(per: per, page: 0).result).to eq(Store.list[0..1])
         end
       end
       context 'page=1' do
         let(:page) { 1 }
         it 'return records' do
-          paginator = make_paginator(per: per, page: page)
-          expected = Account.where(admin: true).select(:id, :nickname).page(page).per(2).to_a
-          expect(paginator.result).to eq(expected)
+          expect(make_paginator(per: per, page: 1).result).to eq(Store.list[2..3])
         end
       end
       context 'page=2' do
-        let(:page) { 2 }
         it 'return records' do
-          paginator = make_paginator(per: per, page: page)
-          expected = Account.where(admin: true).select(:id, :nickname).page(page).per(2).to_a
-          expect(paginator.result).to eq(expected)
         end
       end
       context 'page=3' do
-        let(:page) { 3 }
         it 'return records' do
-          paginator = make_paginator(per: per, page: page)
-          expected = Account.where(admin: true).select(:id, :nickname).page(page).per(2).to_a
-          expect(paginator.result).to eq(expected)
         end
       end
       context 'page=4' do
-        let(:page) { 4 }
         it 'return records' do
-          paginator = make_paginator(per: per, page: page)
-          expected = Account.where(admin: true).select(:id, :nickname).page(page).per(2).to_a
-          expect(paginator.result.size).to eq(2)
-          expect(paginator.result).to eq(expected)
         end
       end
     end

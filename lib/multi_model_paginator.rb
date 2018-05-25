@@ -32,7 +32,7 @@ module MultiModelPaginator
     end
 
     def add(query, select: nil, count: nil)
-      @query_list << QueryStruct.new(query, select, count)
+      @query_list.push(QueryStruct.new(query, select, count))
     end
 
     def result
