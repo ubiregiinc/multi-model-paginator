@@ -1,5 +1,6 @@
 require "active_record"
 
+# https://github.com/rails/rails/blob/master/guides/bug_report_templates/active_record_migrations_gem.rb
 ActiveRecord::Base.establish_connection adapter: "sqlite3", database: ":memory:"
 
 class Account < ActiveRecord::Base

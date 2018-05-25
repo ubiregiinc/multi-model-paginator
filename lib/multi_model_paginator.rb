@@ -3,18 +3,23 @@ require "multi_model_paginator/version"
 module MultiModelPaginator
   class QueryStruct
     attr_reader :query
+
     def initialize(query, select, count)
       @query = query
       @select = select
       @count = count
     end
 
-    def query_with_select
+    def with_select
       @query.select(@select)
     end
 
     def count
-      @count || @query.count
+      if @count.nil?
+        @query.count
+      else
+        @count.call
+      end
     end
   end
 
@@ -31,7 +36,18 @@ module MultiModelPaginator
     end
 
     def result
-      @query_list.reduce do |a, x|
+      remain = @per
+      @page
+      page_table = {
+      }
+      @query_list.reduce([]) do |accumulator, query|
+        if query.count >= remain
+          accumulator.concat(query.with_select.page(@page).per(remain))
+          break(accumulator)
+        end
+        break(accumulator) if accumulator.size >= @per
+        accumulator << query.page(@page).per(1)
+        next(accumulator)
       end
     end
   end
