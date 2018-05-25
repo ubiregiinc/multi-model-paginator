@@ -82,12 +82,14 @@ RSpec.describe 'MultiModelPaginator short_per' do
         expect(make_paginator(per: per, page: 9).result).to eq(Store.list.each_slice(per).to_a[9])
       end
     end
+  end
 
-    describe 'まとめて' do
-      it 'return records' do
-        (Store.list.size / per).times do |i|
-          expect(make_paginator(per: per, page: i).result).to eq(Store.list.each_slice(per).to_a[i])
-        end
+  describe 'まとめて' do
+    let(:per) { 5 }
+
+    it 'return records' do
+      (Store.list.size / per).times do |i|
+        expect(make_paginator(per: per, page: i).result).to eq(Store.list.each_slice(per).to_a[i])
       end
     end
   end
