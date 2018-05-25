@@ -4,19 +4,64 @@ RSpec.describe MultiModelPaginator do
   end
 
   describe '#new' do
-    before do
-      10.times do |i|
-        Account.create!(name: "name#{i}", nickname: "nickname_a#{i}", admin: true)
+    before(:all) do
+      14.times do |i|
+        if (14 / 2) > i
+          Account.create!(name: "name#{i}", nickname: "nickname_a#{i}", admin: true)
+        else
+          Account.create!(name: "name#{i}", nickname: "nickname_a#{i}", admin: false)
+        end
+      end
+      5.times do |i|
+        Item.where(name: "name#{i}", visible: true)
       end
 
       ActiveRecord::Base.logger = Logger.new(STDOUT)
     end
 
-    context '1モデルで終わる時' do
-      it 'return records' do
-        paginator = make_paginator(per: 2, page: 0)
-        expected = Account.where(admin: true).select(:id, :nickname).page(0).per(2).to_a
-        expect(expected).to eq(paginator.result)
+    context 'per=2' do
+      let(:per) { 2 }
+
+      context 'page=0' do
+        let(:page) { 0 }
+        it 'return records' do
+          paginator = make_paginator(per: per, page: page)
+          expected = Account.where(admin: true).order(:id).select(:id, :nickname).page(page).per(2).to_a
+          expect(paginator.result).to eq(expected)
+        end
+      end
+      context 'page=1' do
+        let(:page) { 1 }
+        it 'return records' do
+          paginator = make_paginator(per: per, page: page)
+          expected = Account.where(admin: true).select(:id, :nickname).page(page).per(2).to_a
+          expect(paginator.result).to eq(expected)
+        end
+      end
+      context 'page=2' do
+        let(:page) { 2 }
+        it 'return records' do
+          paginator = make_paginator(per: per, page: page)
+          expected = Account.where(admin: true).select(:id, :nickname).page(page).per(2).to_a
+          expect(paginator.result).to eq(expected)
+        end
+      end
+      context 'page=3' do
+        let(:page) { 3 }
+        it 'return records' do
+          paginator = make_paginator(per: per, page: page)
+          expected = Account.where(admin: true).select(:id, :nickname).page(page).per(2).to_a
+          expect(paginator.result).to eq(expected)
+        end
+      end
+      context 'page=4' do
+        let(:page) { 4 }
+        it 'return records' do
+          paginator = make_paginator(per: per, page: page)
+          expected = Account.where(admin: true).select(:id, :nickname).page(page).per(2).to_a
+          expect(paginator.result.size).to eq(2)
+          expect(paginator.result).to eq(expected)
+        end
       end
     end
 
@@ -26,12 +71,12 @@ RSpec.describe MultiModelPaginator do
 
   def make_paginator(per: , page: )
     paginator = MultiModelPaginator.new(per: per, page: page)
-    paginator.add(Account.where(admin: true),
+    paginator.add(Account.where(admin: true).order(:id),
                   select: [:id, :nickname])
-    paginator.add(Account.where(admin: false),
+    paginator.add(Account.where(admin: false).order(:id),
                   select: [:id, :nickname],
                   count: ->{ Account.count - Account.where(admin: true).count })
-    paginator.add(Item.where(visible: true))
+    paginator.add(Item.where(visible: true).order(:id))
     paginator
   end
 end
