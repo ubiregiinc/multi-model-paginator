@@ -21,10 +21,10 @@ Or install it yourself as:
 
 ## Usage
 
-```
+```ruby
 parinator = MultiModelPaginator.new(per: 100, page: 0)
 parinator.add(Account.all)
-parinator.add(Post.all
+parinator.add(Post.all)
 parinator.result
 ```
 
