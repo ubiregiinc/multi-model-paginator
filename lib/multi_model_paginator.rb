@@ -15,11 +15,14 @@ module MultiModelPaginator
     end
 
     def count
-      if @count.nil?
-        @query.count
-      else
-        @count.call
-      end
+      @cached_count ||=
+        begin
+          if @count.nil?
+            @query.count
+          else
+            @count.call
+          end
+        end
     end
   end
 
@@ -37,17 +40,25 @@ module MultiModelPaginator
 
     def result
       remain = @per
-      @page
       page_table = {
       }
+      @page.zero?
+      offset = (@page * @per)
       @query_list.reduce([]) do |accumulator, query|
-        if query.count >= remain
-          accumulator.concat(query.with_select.page(@page).per(remain))
-          break(accumulator)
+        prev_total_count = @query_list.reduce(0) { |a, q| q == query ? (break(a)) : (a =+ q.count) }
+        if (prev_total_count..query.count).include?(offset)
+          local_page = @page - (prev_total_count / @per) + 1
+        else
+          next(accumulator)
         end
-        break(accumulator) if accumulator.size >= @per
-        accumulator << query.page(@page).per(1)
-        next(accumulator)
+        list = query.with_select.page(local_page).per(@per).first(remain)
+        accumulator.concat(list)
+        remain = remain - list.size
+        if remain == 0
+          break(accumulator)
+        else
+          next(accumulator)
+        end
       end
     end
   end

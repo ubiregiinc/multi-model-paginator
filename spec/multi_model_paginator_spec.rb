@@ -13,6 +13,7 @@ RSpec.describe MultiModelPaginator do
   describe '#new' do
     before(:all) do
       14.times.map do |i|
+        i = i + 1
         Store.list <<
           if (14 / 2) > i
             Account.create!(name: "name#{i}", nickname: "nickname_a#{i}", admin: true)
@@ -31,27 +32,32 @@ RSpec.describe MultiModelPaginator do
 
       context 'page=0' do
         it 'return records' do
-          expect(make_paginator(per: per, page: 0).result).to eq(Store.list[0..1])
+          expect(make_paginator(per: per, page: 0).result).to eq(Store.list.each_slice(per).to_a[0])
         end
       end
       context 'page=1' do
         it 'return records' do
-          expect(make_paginator(per: per, page: 1).result).to eq(Store.list[0..1])
+          expect(make_paginator(per: per, page: 1).result).to eq(Store.list.each_slice(per).to_a[1])
         end
       end
       context 'page=2' do
         it 'return records' do
-          expect(make_paginator(per: per, page: 2).result).to eq(Store.list[2..3])
+          expect(make_paginator(per: per, page: 2).result).to eq(Store.list.each_slice(per).to_a[2])
         end
       end
       context 'page=3' do
         it 'return records' do
-          expect(make_paginator(per: per, page: 3).result).to eq(Store.list[4..5])
+          expect(make_paginator(per: per, page: 3).result).to eq(Store.list.each_slice(per).to_a[3])
         end
       end
       context 'page=4' do
         it 'return records' do
-          expect(make_paginator(per: per, page: 4).result).to eq(Store.list[5..6])
+          expect(make_paginator(per: per, page: 4).result).to eq(Store.list.each_slice(per).to_a[4])
+        end
+      end
+      context 'page=5' do
+        it 'return records' do
+          expect(make_paginator(per: per, page: 5).result).to eq(Store.list.each_slice(per).to_a[5])
         end
       end
     end
