@@ -24,11 +24,6 @@ RSpec.describe 'MultiModelPaginator short_per' do
     ActiveRecord::Base.logger = Logger.new(STDOUT)
   end
 
-  after(:all) do
-    ActiveRecord::Base.connection.rollback_transaction
-    ActiveRecord::Base.logger = Logger.new('/dev/null')
-  end
-
   context 'per=2' do
     let(:per) { 2 }
 

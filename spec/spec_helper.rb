@@ -4,6 +4,14 @@ require "multi_model_paginator"
 require "support/models"
 
 RSpec.configure do |config|
+  config.before(:all) do
+    ActiveRecord::Base.connection.begin_transaction
+  end
+  config.after(:all) do
+    ActiveRecord::Base.connection.rollback_transaction
+    ActiveRecord::Base.logger = Logger.new('/dev/null')
+  end
+
   # Enable flags like --only-failures and --next-failure
   config.example_status_persistence_file_path = ".rspec_status"
 

@@ -9,7 +9,6 @@ RSpec.describe 'MultiModelPaginator 10 per' do
     let(:per) { 10 }
 
     before(:all) do
-      ActiveRecord::Base.connection.begin_transaction
       Store.list = []
 
       324.times.map do |i|
@@ -25,11 +24,6 @@ RSpec.describe 'MultiModelPaginator 10 per' do
         Store.list << Item.create!(name: "name#{i}", visible: true)
       end
       ActiveRecord::Base.logger = Logger.new(STDOUT)
-    end
-
-    after(:all) do
-      ActiveRecord::Base.connection.rollback_transaction
-      ActiveRecord::Base.logger = Logger.new('/dev/null')
     end
 
     context 'page=0' do
