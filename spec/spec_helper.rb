@@ -2,8 +2,11 @@ require "bundler/setup"
 require "pry"
 require "multi_model_paginator"
 require "support/models"
+require "support/helper_methods"
 
 RSpec.configure do |config|
+  config.include(HelperMethods)
+
   config.before(:all) do
     ActiveRecord::Base.connection.begin_transaction
   end
