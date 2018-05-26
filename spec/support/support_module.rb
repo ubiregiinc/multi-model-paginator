@@ -1,4 +1,10 @@
-module HelperMethods
+module SupoortModule
+  class Store
+    class << self
+      attr_accessor :list
+    end
+  end
+
   def make_paginator(per: , page: )
     paginator = MultiModelPaginator.new(per: per, page: page)
     paginator.add(Account.where(admin: true).order(:id),

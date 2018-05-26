@@ -1,19 +1,13 @@
 RSpec.describe 'MultiModelPaginator 1 per' do
-  class Store
-    class << self
-      attr_accessor :list
-    end
-  end
-
   describe 'まとめて' do
     let(:per) { 1 }
 
     before(:all) do
-      Store.list = []
+      SupoortModule::Store.list = []
 
       14.times.map do |i|
         i = i + 1
-        Store.list <<
+        SupoortModule::Store.list <<
         if (14 / 2) > i
           Account.create!(name: "name#{i}", nickname: "nickname_a#{i}", admin: true)
         else
@@ -21,14 +15,14 @@ RSpec.describe 'MultiModelPaginator 1 per' do
         end
       end
       5.times.map do |i|
-        Store.list << Item.create!(name: "name#{i}", visible: true)
+        SupoortModule::Store.list << Item.create!(name: "name#{i}", visible: true)
       end
       ActiveRecord::Base.logger = Logger.new(STDOUT)
     end
 
     it 'return records' do
-      (Store.list.size / per).times do |i|
-        expect(make_paginator(per: per, page: i).result).to eq(Store.list.each_slice(per).to_a[i])
+      (SupoortModule::Store.list.size / per).times do |i|
+        expect(make_paginator(per: per, page: i).result).to eq(SupoortModule::Store.list.each_slice(per).to_a[i])
       end
     end
   end
