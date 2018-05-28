@@ -37,7 +37,7 @@ RSpec.describe 'MultiModelPaginator 10 per' do
     end
 
     it 'return records' do
-      (Store.list.size / per).times do |i|
+      (SupoortModule::Store.list.size / per).times do |i|
         expect(make_paginator(per: per, page: i).result).to eq(SupoortModule::Store.list.each_slice(per).to_a[i])
       end
     end
