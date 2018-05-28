@@ -54,7 +54,7 @@ module MultiModelPaginator
         # |t1:......|t2:....[.].......|
         offset = (@page * @per) - prev_query_offset
         offset = 0 if offset.negative?
-        list = query_struct.with_select.limit(@per).offset(offset).first(remain)
+        list = query_struct.with_select.limit(@per).offset(offset).to_a.first(remain)
         accumulator.concat(list)
         remain = remain - list.size
         if remain == 0
