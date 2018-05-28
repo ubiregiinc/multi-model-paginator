@@ -17,6 +17,13 @@ RSpec.describe 'MultiModelPaginator short_per' do
     ActiveRecord::Base.logger = Logger.new(STDOUT)
   end
 
+  describe '#count_all' do
+    it 'return sum count from queies' do
+      expect(make_paginator(per: 1, page: 0).count_all).to eq(19)
+      expect(make_paginator(per: 3, page: 9).count_all).to eq(19)
+    end
+  end
+
   context 'per=2' do
     let(:per) { 2 }
 

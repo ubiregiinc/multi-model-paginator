@@ -36,6 +36,10 @@ module MultiModelPaginator
       @query_list.push(QueryStruct.new(query, select, count))
     end
 
+    def count_all
+      @query_list.map(&:count).sum
+    end
+
     def result
       remain = @per
       position = @page * @per
