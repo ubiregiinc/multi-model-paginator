@@ -28,7 +28,7 @@ module MultiModelPaginator
     def initialize(per, page)
       @query_list = []
       @per = per
-      @page = page
+      @page = page.to_i
       @list = []
     end
 
