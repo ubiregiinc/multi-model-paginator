@@ -48,7 +48,9 @@ module MultiModelPaginator
         prev_query_offset = current_range.first
         # テーブルt1に6レコード, テーブルt2に10レコードある場合、per:10で読んだ時にpage:2はテーブルt2の5個目が先頭になる
         # |t1:......|t2:....[.].......|
-        list = query_struct.with_select.limit(@per).offset((@page * @per) - prev_query_offset).first(remain)
+        offset = (@page * @per) - prev_query_offset
+        offset = 0 if offset.negative?
+        list = query_struct.with_select.limit(@per).offset(offset).first(remain)
         accumulator.concat(list)
         remain = remain - list.size
         if remain == 0
