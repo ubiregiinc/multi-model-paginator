@@ -60,7 +60,7 @@ module MultiModelPaginator
         if remain == 0
           break(accumulator)
         else
-          position = (@page + 1) * @per
+          position = prev_total_count + query_struct.count
           next(accumulator)
         end
       end
