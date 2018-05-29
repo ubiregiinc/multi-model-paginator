@@ -1,4 +1,7 @@
 # MultiModelPaginator
+* 複数のモデルでページネーションを行うgemです
+* 追加されたクエリ毎のカウントをとっていい感じにページネーションします
+
 ## Dependencies
 * ActiveRecord
 
@@ -21,10 +24,24 @@ Or install it yourself as:
 ## Usage
 
 ```ruby
-parinator = MultiModelPaginator.new(per: 100, page: 0)
-parinator.add(Account.all)
-parinator.add(Post.all)
-parinator.result
+Account.count # => 3
+Item.count    # => 5
+
+paginator = MultiModelPaginator.new(per: 2, page: 0)
+paginator.add(Account.all)
+paginator.add(Item.all)
+# D, [2018-05-29T22:28:55.104813 #7189] DEBUG -- :   CACHE  (0.0ms)  SELECT COUNT(*) FROM "accounts"
+# D, [2018-05-29T22:28:55.105422 #7189] DEBUG -- :   CACHE Account Load (0.0ms)  SELECT  "accounts".* FROM "accounts" LIMIT 2 OFFSET 0
+paginator.result.map(&:class).map(&:to_s) # =>["Account", "Account"]
+
+paginator = MultiModelPaginator.new(per: 2, page: 1)
+paginator.add(Account.all)
+paginator.add(Item.all)
+# D, [2018-05-29T22:29:37.069335 #7189] DEBUG -- :   CACHE  (0.0ms)  SELECT COUNT(*) FROM "accounts"
+# D, [2018-05-29T22:29:37.069765 #7189] DEBUG -- :   CACHE Account Load (0.0ms)  SELECT  "accounts".* FROM "accounts" LIMIT 2 OFFSET 2
+# D, [2018-05-29T22:29:37.070255 #7189] DEBUG -- :   CACHE  (0.0ms)  SELECT COUNT(*) FROM "items"
+# D, [2018-05-29T22:29:37.070821 #7189] DEBUG -- :   CACHE Item Load (0.0ms)  SELECT  "items".* FROM "items" LIMIT 2 OFFSET 0
+paginator.result.map(&:class).map(&:to_s) # => ["Account", "Item"]
 ```
 
 ## License
