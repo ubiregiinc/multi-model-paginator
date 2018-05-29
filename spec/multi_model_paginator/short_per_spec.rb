@@ -24,7 +24,7 @@ RSpec.describe 'MultiModelPaginator short_per' do
     end
   end
 
-  context 'per=2' do
+  describe 'per=2' do
     let(:per) { 2 }
 
     context 'page=0' do
@@ -76,6 +76,13 @@ RSpec.describe 'MultiModelPaginator short_per' do
       it 'return records' do
         expect(make_paginator(per: per, page: 9).result).to eq(SupoortModule::Store.list.each_slice(per).to_a[9])
       end
+    end
+  end
+
+  describe 'per=100' do
+    let(:per) { 100 }
+    it 'return records' do
+      expect(make_paginator(per: per, page: 0).result).to eq(SupoortModule::Store.list.each_slice(per).to_a[0])
     end
   end
 
