@@ -10,7 +10,7 @@
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'multi_model_paginator'
+gem 'multi_model_paginator', git: 'https://github.com/jiikko/multi-model-paginator'
 ```
 
 And then execute:
