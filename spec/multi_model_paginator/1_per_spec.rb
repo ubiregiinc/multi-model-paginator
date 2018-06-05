@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 RSpec.describe 'MultiModelPaginator 1 per' do
   describe 'まとめて' do
     let(:per) { 1 }

@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 RSpec.describe 'MultiModelPaginator short_per' do
   before(:all) do
     SupoortModule::Store.list = []

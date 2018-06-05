@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 RSpec.describe 'MultiModelPaginator 10 per' do
   describe '#new' do
     let(:per) { 10 }
