@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = %q{multi_models_paginator}
   spec.description   = spec.summary
-  spec.homepage      = "https://github.com/jiikko/multi-model-paginator"
+  spec.homepage      = "https://github.com/ubiregiinc/multi-model-paginator"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
